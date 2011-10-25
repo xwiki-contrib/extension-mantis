@@ -1,0 +1,2 @@
+org.xwiki.extensions.mantis.internal.DefaultMantis
+org.xwiki.extensions.mantis.internal.MantisScriptService
