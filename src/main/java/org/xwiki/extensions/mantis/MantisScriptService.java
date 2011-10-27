@@ -17,33 +17,52 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.extensions.mantis.internal;
+package org.xwiki.extensions.mantis;
 
-import java.util.List;
+import java.net.URL;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.extensions.mantis.Mantis;
 import org.xwiki.script.service.ScriptService;
 
+import biz.futureware.mantis.rpc.soap.client.MantisConnectLocator;
+import biz.futureware.mantis.rpc.soap.client.MantisConnectPortType;
+
 /**
- * Make the HelloWorld API available to scripting.
- *
+ * Expose MantisBt SOAP service to XWiki scripts.
+ * 
  * @version $Id$
  */
 @Component
 @Named("mantis")
 @Singleton
-public class MantisScriptService implements ScriptService
-{
-    @Inject
-    private Mantis mantis;
+public class MantisScriptService implements ScriptService {
 
-    public List<String> projects()
-    {
-        return this.mantis.listProjects();
-    }
+	/**
+	 * The logger to log.
+	 */
+	@Inject
+	private Logger logger;
+
+	/**
+	 * @param mantisURL
+	 *            the URL to the remote MantisBt instance to connect to
+	 * @return the client to interact with the remote MantisBt instance
+	 */
+	public MantisConnectPortType getMantisClient(String mantisURL) {
+		MantisConnectPortType mantisConnectPortType = null; 
+		try {
+			mantisConnectPortType = new MantisConnectLocator().getMantisConnectPort(new URL(mantisURL + "/api/soap/mantisconnect.php"));
+			String version = mantisConnectPortType.mc_version();
+			this.logger.debug("Connected to Mantis({})", version);
+		} catch (Exception e) {
+			this.logger.warn("Error  Mantis URL [{}]", mantisURL);
+			mantisConnectPortType = null;
+		} 
+		return mantisConnectPortType;
+	}
 }

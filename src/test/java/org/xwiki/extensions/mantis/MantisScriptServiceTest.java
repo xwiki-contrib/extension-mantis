@@ -19,18 +19,23 @@
  */
 package org.xwiki.extensions.mantis;
 
-import java.util.List;
-
-import org.xwiki.component.annotation.ComponentRole;
+import org.junit.Assert;
+import org.junit.Test;
+import org.xwiki.test.AbstractMockingComponentTestCase;
+import org.xwiki.test.annotation.MockingRequirement;
 
 /**
- * Interface (aka Role) of the Component
- * 
+ * Tests for the {@link MantisScriptService} component.
+ *
  * @version $Id$
  */
-@ComponentRole
-public interface Mantis
+public class MantisScriptServiceTest extends AbstractMockingComponentTestCase
 {
-    List<String> listProjects();
-}
+    @MockingRequirement
+    private MantisScriptService mantis;
 
+    @Test
+    public void testConnect() {
+    	Assert.assertNotNull(mantis.getMantisClient("http://www.mantisbt.org/demo"));
+    }
+}
