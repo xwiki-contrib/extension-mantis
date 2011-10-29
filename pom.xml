@@ -25,14 +25,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.xwiki.extensions</groupId>
-  <artifactId>xwiki-mantis-extension</artifactId>
+  <artifactId>xwiki-extension-mantis</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>XWiki Macro - Mantis Component</name>
-  <description>XWiki Macro - Mantis Component</description>
+  <name>XWiki Extensions - Mantis Component</name>
+  <description>XWiki Extensions - Mantis Component</description>
   <properties>
     <platform.core.version>3.1</platform.core.version>
     <mantis.version>1.2.6</mantis.version>
   </properties>
+  <dependencies>
+    <dependency>
+      <groupId>biz.futureware.mantis</groupId>
+      <artifactId>mantis-axis-soap-client</artifactId>
+      <version>${mantis.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-component-default</artifactId>
+      <version>${platform.core.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-script</artifactId>
+      <version>${platform.core.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Testing dependencies -->
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-test</artifactId>
+      <version>${platform.core.version}</version>
+      <scope>test</scope>
+    </dependency>    
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -44,33 +70,27 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+      <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-dependency-plugin</artifactId>
+       <executions>
+         <execution>
+           <id>unpack-dependencies</id>
+           <phase>compile</phase>
+           <goals>
+             <goal>unpack-dependencies</goal>
+           </goals>
+           <configuration>
+             <includeArtifactIds>mantis-axis-soap-client</includeArtifactIds>
+           	     <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                 <overWriteReleases>false</overWriteReleases>
+                 <overWriteSnapshots>true</overWriteSnapshots>
+             </configuration>
+         </execution>
+       </executions>
+     </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>biz.futureware.mantis</groupId>
-      <artifactId>mantis-axis-soap-client</artifactId>
-      <version>${mantis.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-component-default</artifactId>
-      <version>${platform.core.version}</version>
-    </dependency>
-    <!-- Only needed if some of the component's APIs must be made visible to scripting in wiki pages -->
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-script</artifactId>
-      <version>${platform.core.version}</version>
-    </dependency>
-    <!-- Testing dependencies -->
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-test</artifactId>
-      <version>${platform.core.version}</version>
-      <scope>test</scope>
-    </dependency>    
-  </dependencies>
   <repositories>
     <repository>
    	  <id>xwiki-releases</id>
