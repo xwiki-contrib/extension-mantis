@@ -24,15 +24,29 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.xwiki.extensions</groupId>
+  <parent>
+    <groupId>org.xwiki.commons</groupId>
+    <artifactId>xwiki-commons-pom</artifactId>
+    <version>3.2</version>
+  </parent>
+  <groupId> org.xwiki.contrib</groupId>
   <artifactId>xwiki-extension-mantis</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>XWiki Extensions - Mantis Component</name>
   <description>XWiki Extensions - Mantis Component</description>
   <properties>
-    <platform.core.version>3.1</platform.core.version>
-    <mantis.version>1.2.6</mantis.version>
+  	<mantis.version>1.2.6</mantis.version>
   </properties>
+  <developers>
+    <developer>
+      <id>jerr</id>
+      <name>Jérémie Lagarde</name>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Project Leader</role>
+      </roles>
+    </developer>
+  </developers>
   <dependencies>
     <dependency>
       <groupId>biz.futureware.mantis</groupId>
@@ -42,54 +56,40 @@
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-component-default</artifactId>
-      <version>${platform.core.version}</version>
+      <version>${commons.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-script</artifactId>
-      <version>${platform.core.version}</version>
+      <version>${commons.version}</version>
       <scope>provided</scope>
     </dependency>
     <!-- Testing dependencies -->
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-test</artifactId>
-      <version>${platform.core.version}</version>
+      <version>${commons.version}</version>
       <scope>test</scope>
     </dependency>    
   </dependencies>
   <build>
     <plugins>
+      <!-- We must re-specify the version of the xwiki-commons-tool-enforcer-dependencies dependency,
+           since ${project.version} is resolved to the current project's version, not the xwiki commons one -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.xwiki.commons</groupId>
+            <artifactId>xwiki-commons-tool-enforcer-dependencies</artifactId>
+            <version>${commons.version}</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies>
       </plugin>
-      <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-dependency-plugin</artifactId>
-       <executions>
-         <execution>
-           <id>unpack-dependencies</id>
-           <phase>compile</phase>
-           <goals>
-             <goal>unpack-dependencies</goal>
-           </goals>
-           <configuration>
-             <includeArtifactIds>mantis-axis-soap-client</includeArtifactIds>
-           	     <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                 <overWriteReleases>false</overWriteReleases>
-                 <overWriteSnapshots>true</overWriteSnapshots>
-             </configuration>
-         </execution>
-       </executions>
-     </plugin>
-    </plugins>
+    </plugins>    
   </build>
   <repositories>
     <repository>
@@ -104,4 +104,4 @@
       </snapshots>
     </repository>
   </repositories>
-</project>
+ </project>
